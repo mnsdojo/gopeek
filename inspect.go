@@ -32,6 +32,6 @@ func Inspect(v any) {
 			fmt.Printf("Index %d (%s) : %v\n", i, item.Kind(), item.Interface())
 		}
 	default:
-		fmt.Println("No further inspection available")
+		fmt.Printf("Primitive value of type [%s]: %v\n", t, val.Interface())
 	}
 }

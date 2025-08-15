@@ -1,19 +1,27 @@
 package main
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 func parseDynamicValue(raw string) any {
 	//try bool
-	if b, err := strconv.ParseBool(raw); err != nil {
+	if b, err := strconv.ParseBool(raw); err == nil {
 		return b
 	}
 
-	if i, err := strconv.Atoi(raw); err != nil {
+	if i, err := strconv.Atoi(raw); err == nil {
 		return i
 	}
 
-	if f, err := strconv.ParseFloat(raw, 64); err != nil {
+	if f, err := strconv.ParseFloat(raw, 64); err == nil {
 		return f
+	}
+
+	if strings.ContainsAny(raw, ":=") {
+		fmt.Printf("⚠️  This looks like Go code, not a value: %q\n", raw)
 	}
 	return raw
 

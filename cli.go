@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"os"
 )
 
 type CLIArgs struct {
@@ -19,12 +21,24 @@ func ParseFlags() CLIArgs {
 	if count == 0 {
 		fmt.Println("X Please Provide one of --value or --json")
 		flag.Usage()
-		panic("No Input Provided")
+		os.Exit(1)
 	}
 	if count > 1 {
 		fmt.Println("Please Provide only one of --value or --json (not both)")
 		flag.Usage()
-		panic("Conflicting input flags")
+		os.Exit(1)
+	}
+
+	switch {
+	case *jsonFlag != "":
+		var data any
+		if err := json.Unmarshal([]byte(*jsonFlag), &data); err != nil {
+			fmt.Printf("❌ Invalid JSON: %s\n", err)
+			os.Exit(1)
+		}
+		return CLIArgs{Input: data}
+	case *valFlag != "":
+		return CLIArgs{Input: parseDynamicValue(*valFlag)}
 	}
 	return CLIArgs{}
 
